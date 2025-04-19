@@ -67,7 +67,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && !isset($_GET['token'])) {
         $reset_link = "http://localhost/Matter_Project/reset_password.php?token=" . $token;
 
         
-        $mail = new PHPMailer(true);
+            $mail = new PHPMailer(true);
         try {
             
             $mail->isSMTP();
