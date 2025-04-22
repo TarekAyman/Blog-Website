@@ -2,7 +2,6 @@
 session_start();
 include "db.php";
 
-// التأكد من أن المستخدم مسجل دخوله
 if (!isset($_SESSION["user_id"])) {
     header("Location: login.php");
     exit();
@@ -10,8 +9,7 @@ if (!isset($_SESSION["user_id"])) {
 
 $user_id = $_SESSION["user_id"];
 
-// تعديل الاستعلام ليشمل البوستات التي ليست خاصة
-$sql = "SELECT id, title, content, created_at FROM posts WHERE user_id = ? AND is_private = 0 ORDER BY created_at DESC";
+$sql = "SELECT id, title, content, created_at FROM posts WHERE user_id = ? AND is_private = 1 ORDER BY created_at DESC";
 $stmt = $conn->prepare($sql);
 $stmt->bind_param("i", $user_id);
 $stmt->execute();
@@ -22,7 +20,7 @@ $result = $stmt->get_result();
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>My Posts</title>
+    <title>My Private Posts</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -63,45 +61,25 @@ $result = $stmt->get_result();
             color: #999;
         }
 
-        .button-group {
-            margin-top: 10px;
-        }
-
-        .edit-btn,
-        .delete-btn {
+        .edit-btn, .delete-btn {
             display: inline-block;
+            margin-top: 8px;
             background-color: #007bff;
             color: white;
             padding: 6px 12px;
             text-decoration: none;
             border-radius: 4px;
             font-size: 14px;
-            margin-right: 8px;
-            transition: background-color 0.3s ease;
         }
 
-        .edit-btn:hover {
+        .edit-btn:hover, .delete-btn:hover {
             background-color: #0056b3;
-        }
-
-        .delete-btn {
-            background-color: #dc3545;
-        }
-
-        .delete-btn:hover {
-            background-color: #c82333;
-        }
-
-        .no-posts {
-            text-align: center;
-            color: #888;
-            font-size: 18px;
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h2>My Posts</h2>
+        <h2>My Private Posts</h2>
 
         <?php if ($result->num_rows > 0): ?>
             <?php while ($row = $result->fetch_assoc()): ?>
@@ -109,15 +87,12 @@ $result = $stmt->get_result();
                     <h3><?= htmlspecialchars($row["title"]) ?></h3>
                     <p><?= nl2br(htmlspecialchars($row["content"])) ?></p>
                     <small>Posted on <?= $row["created_at"] ?></small><br>
-
-                    <div class="button-group">
-                        <a href="edit_post.php?id=<?= $row['id'] ?>" class="edit-btn">Edit</a>
-                        <a href="delete_post.php?id=<?= $row['id'] ?>" class="delete-btn" onclick="return confirm('Are you sure you want to delete this post?')">Delete</a>
-                    </div>
+                    <a href="edit_post.php?id=<?= $row['id'] ?>" class="edit-btn">Edit</a>
+                    <a href="delete_post.php?id=<?= $row['id'] ?>" class="delete-btn" onclick="return confirm('Are you sure you want to delete this post?')">Delete</a>
                 </div>
             <?php endwhile; ?>
         <?php else: ?>
-            <p class="no-posts">You haven't created any public posts yet. Start by creating one!</p>
+            <p>You have no private posts yet.</p>
         <?php endif; ?>
     </div>
 </body>

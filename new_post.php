@@ -7,16 +7,15 @@ if (!isset($_SESSION['user_id'])) {
     exit();
 }
 
-
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $title = $_POST['title'];
     $content = $_POST['content'];
+    $is_private = isset($_POST['is_private']) ? 1 : 0;
     $user_id = $_SESSION['user_id'];  
 
-    
-    $sql = "INSERT INTO posts (user_id, title, content) VALUES (?, ?, ?)";
+    $sql = "INSERT INTO posts (user_id, title, content, is_private) VALUES (?, ?, ?, ?)";
     $stmt = $conn->prepare($sql);
-    $stmt->bind_param("iss", $user_id, $title, $content);  
+    $stmt->bind_param("issi", $user_id, $title, $content, $is_private);  
     if ($stmt->execute()) {
         $message = "Post created successfully!";
     } else {
@@ -32,7 +31,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <meta charset="UTF-8">
     <title>Create Post</title>
     <style>
-        
         body {
             font-family: Arial, sans-serif;
             background-color: #f4f7f6;
@@ -40,7 +38,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             padding: 0;
         }
 
-        
         .form-container {
             width: 400px;
             margin: 50px auto;
@@ -50,19 +47,16 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             border-radius: 8px;
         }
 
-        
         h2 {
             text-align: center;
             color: #333;
         }
 
-        
         label {
             font-size: 16px;
             color: #444;
         }
 
-        
         input[type="text"], textarea {
             width: 100%;
             padding: 10px;
@@ -72,7 +66,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             font-size: 14px;
         }
 
-        
         button {
             width: 100%;
             padding: 10px;
@@ -84,15 +77,19 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             cursor: pointer;
         }
 
-        
         button:hover {
             background-color: #0056b3;
         }
 
-        
         .message {
             text-align: center;
             color: #28a745;
+        }
+
+        .checkbox-label {
+            display: block;
+            margin: 10px 0;
+            font-size: 14px;
         }
     </style>
 </head>
@@ -109,6 +106,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
             <label>Content:</label>
             <textarea name="content" required></textarea><br>
+
+            <label class="checkbox-label">
+                <input type="checkbox" name="is_private" value="1"> Make this post private
+            </label>
 
             <button type="submit">Create Post</button>
         </form>

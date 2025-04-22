@@ -8,6 +8,7 @@ if (!isset($_SESSION['user_id'])) {
 include "db.php";
 
 $user_id = $_SESSION['user_id'];
+$user_role = $_SESSION['user_role'];
 
 $sql = "SELECT username, email FROM users WHERE id = ?";
 $stmt = $conn->prepare($sql);
@@ -31,7 +32,13 @@ $user = $result->fetch_assoc();
 
         <a href="new_post.php"><button>Create New Post</button></a>
         <a href="view_posts.php"><button>View All Posts</button></a>
-        <a href="my_post.php"><button>my post</button></a>
+        <a href="my_post.php"><button>My Posts</button></a>
+        <a href="private_post.php"><button>Private Posts</button></a>
+
+        <?php if ($user_role === 'admin'): ?>
+            <a href="admin.php"><button>Admin Panel</button></a> 
+        <?php endif; ?>
+
         <a href="logout.php"><button>Logout</button></a>
     </div>
 </body>

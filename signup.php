@@ -4,16 +4,17 @@
     if($_SERVER["REQUEST_METHOD"] == "POST"){
         $username = trim($_POST["username"]);
         $email = trim($_POST["email"]);
-        $password = password_hash($_POST["password"],PASSWORD_DEFAULT);
+        $password = password_hash($_POST["password"], PASSWORD_DEFAULT);
+        $role = "user";
 
-        $sql = "INSERT INTO users (username,email,password) VALUES (?,?,?)";
+        $sql = "INSERT INTO users (username, email, password, role) VALUES (?, ?, ?, ?)";
         $stmt = $conn->prepare($sql);
-        $stmt->bind_param("sss",$username,$email,$password);
+        $stmt->bind_param("ssss", $username, $email, $password, $role);
 
         if($stmt->execute()){
             $message = "Account Successfully Created";
-        }else{
-            $message = "Error" .$stmt->error;
+        } else {
+            $message = "Error: " . $stmt->error;
         }
     }
 ?>

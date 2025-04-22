@@ -74,7 +74,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && !isset($_GET['token'])) {
             $mail->Host = 'smtp.gmail.com'; 
             $mail->SMTPAuth = true;
             $mail->Username = 'tarekseoudii@gmail.com';  
-            $mail->Password = 'uugj sccx ljmd vqqk';  
+            $mail->Password = 'riqo dstp rlwa vxps';  
             $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;  
             $mail->Port = 587;  
 
